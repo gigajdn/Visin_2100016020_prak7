@@ -4,28 +4,64 @@
 <head>
     <title>Dashboard</title>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="dashboard.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
-</head>
+    <style>
+        body {
+            margin-top: 40px;
+            background-color: #F4F4F4;
+            font-family: Arial, sans-serif;
+        }
 
-<style>
-    body {
-        margin-top: 40px;
-        padding: 0 20px;
-    }
-</style>
+        .navbar {
+            background-color: #333333;
+        }
+
+        .navbar-brand {
+            color: #FFFFFF;
+            font-size: 20px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #FFFFFF;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #336633;
+            color: #FFFFFF;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 12px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        #chart1,
+        #chart2,
+        #chart3,
+        #chart4 {
+            height: 300px;
+        }
+    </style>
+
+</head>
 
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <span class="navbar-brand mb-0 h1">Dashboard</span>
     </nav>
 
-
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-6">
+    <div class="container mt-4 ">
+        <div class="row mt-12">
+            <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">Grafik 1</div>
                     <div class="card-body">
@@ -33,7 +69,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">Grafik 2</div>
                     <div class="card-body">
@@ -43,7 +79,7 @@
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">Grafik 3</div>
                     <div class="card-body">
@@ -51,7 +87,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">Grafik 4</div>
                     <div class="card-body">
@@ -62,53 +100,88 @@
         </div>
     </div>
 
-    <div id="chart2"></div>
-    <!-- Tambahkan lebih banyak elemen div untuk grafik lainnya -->
-</body>
+    <script>
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(getSpreadsheetData);
 
-<script>
-    google.charts.load('current', { packages: ['corechart'] });
-    google.charts.setOnLoadCallback(getSpreadsheetData);
+        function getSpreadsheetData() {
+            var spreadsheetId = '1n567Ot120JanaCCAI0OWwUJLS7PVQLQ1';
 
-    function getSpreadsheetData() {
-        var spreadsheetId = '1n567Ot120JanaCCAI0OWwUJLS7PVQLQ1';
-        var range = 'UTS Visualisasi Informasi!A1:B10';
+            // Get data for Chart 1
+            var rangeChart1 = '1!A1:B10';
+            var queryChart1 = new google.visualization.Query('https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?gid=0&range=' + rangeChart1);
+            queryChart1.send(function (responseChart1) {
+                handleQueryResponse(responseChart1, 'chart1');
+            });
 
-        var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?gid=0&range=' + range);
-        query.send(handleQueryResponse);
-    }
+            // Get data for Chart 2
+            var rangeChart2 = '2!A1:B5';
+            var queryChart2 = new google.visualization.Query('https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?gid=0&range=' + rangeChart2);
+            queryChart2.send(function (responseChart2) {
+                handleQueryResponse(responseChart2, 'chart2');
+            });
 
-    function handleQueryResponse(response) {
-        if (response.isError()) {
-            console.error('Error: ' + response.getMessage());
-            return;
+            // Get data for Chart 3
+            var rangeChart3 = '3!A1:E6';
+            var queryChart3 = new google.visualization.Query('https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?gid=0&range=' + rangeChart3);
+            queryChart3.send(function (responseChart3) {
+                handleQueryResponse(responseChart3, 'chart3');
+            });
+
+            // Get data for Chart 4
+            var rangeChart4 = '4!A1:E14';
+            var queryChart4 = new google.visualization.Query('https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/gviz/tq?gid=0&range=' + rangeChart4);
+            queryChart4.send(function (responseChart4) {
+                handleQueryResponse(responseChart4, 'chart4');
+            });
         }
 
-        var data = response.getDataTable();
-        drawCharts(data);
-    }
+        function handleQueryResponse(response, chartId) {
+            if (response.isError()) {
+                console.error('Error: ' + response.getMessage());
+                return;
+            }
 
-    function drawCharts(data) {
-        var options = {
-            title: 'Grafik Rata Rata Jumlah QTY Untuk Setiap Produk ',
-            width: 400,
-            height: 300
-        };
+            var data = response.getDataTable();
+            drawChart(data, chartId);
+        }
 
-        var chart1 = new google.visualization.ColumnChart(document.getElementById('chart1'));
-        chart1.draw(data, options);
+        function drawChart(data, chartId) {
+            var option1 = {
+                title: 'Grafik Rata Rata Jumlah QTY Untuk Setiap Produk',
+                width: 700,
+            };
 
-        var chart2 = new google.visualization.PieChart(document.getElementById('chart2'));
-        chart2.draw(data, options);
+            var option2 = {
+                title: 'Perbandingan Jumlah QTY Untuk Setiap Produk',
+                width: 300
+            };
 
-        var chart3 = new google.visualization.LineChart(document.getElementById('chart3'));
-        chart3.draw(data, options);
+            var option3 = {
+                title: 'Perbandingan Jumlah Total Keuntungan berdasarkan Kategori',
+                width: 1000,
+            };
 
-        var chart4 = new google.visualization.AreaChart(document.getElementById('chart4'));
-        chart4.draw(data, options);
+            var option4 = {
+                title: 'Perbandingan Jumlah Total Keuntungan Berdasarkan Kota Dalam Jangka Waktu 1 Tahun',
+                width: 1000,
+            };
 
-        // Tambahkan jenis grafik lain dan elemen div untuk grafik lainnya
-    }
-</script>
+            if (chartId === 'chart1') {
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart1'));
+                chart.draw(data, option1);
+            } else if (chartId === 'chart2') {
+                var chart = new google.visualization.PieChart(document.getElementById('chart2'));
+                chart.draw(data, option2);
+            } else if (chartId === 'chart3') {
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart3'));
+                chart.draw(data, option3);
+            } else if (chartId === 'chart4') {
+                var chart = new google.visualization.AreaChart(document.getElementById('chart4'));
+                chart.draw(data, option4);
+            }
+        }
+    </script>
+</body>
 
 </html>
